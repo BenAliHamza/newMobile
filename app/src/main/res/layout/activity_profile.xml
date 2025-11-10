@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/avatar"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:src="@android:drawable/sym_def_app_icon"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Full Name"
+            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+            app:layout_constraintTop_toTopOf="@id/avatar"
+            app:layout_constraintStart_toEndOf="@id/avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="16dp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvSex"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Sex"
+            app:layout_constraintTop_toBottomOf="@id/tvName"
+            app:layout_constraintStart_toEndOf="@id/avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="16dp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvRole"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Role"
+            app:layout_constraintTop_toBottomOf="@id/tvSex"
+            app:layout_constraintStart_toEndOf="@id/avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="16dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnChooseImage"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose image"
+            app:layout_constraintTop_toBottomOf="@id/avatar"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="24dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRefresh"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Refresh"
+            app:layout_constraintTop_toBottomOf="@id/avatar"
+            app:layout_constraintStart_toEndOf="@id/btnChooseImage"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="24dp" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progress"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/btnChooseImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="12dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

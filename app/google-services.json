@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "70118484307",
+    "project_id": "mobile-esprit",
+    "storage_bucket": "mobile-esprit.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70118484307:android:4b7c2118a69fd347e1d9a6",
+        "android_client_info": {
+          "package_name": "tn.esprit.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "70118484307-jn8tvbhp535n5cpu09b0qcgc21o24m53.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tn.esprit.myapplication",
+            "certificate_hash": "192688267f1ee9233de0d193522f4d613c77fa55"
+          }
+        },
+        {
+          "client_id": "70118484307-ale9pmbi2eos8bve0qg4e22n0pe2rrco.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDn5mtPq-Six5YsrX3VD3FYIXoM6AB1VJg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "70118484307-ale9pmbi2eos8bve0qg4e22n0pe2rrco.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

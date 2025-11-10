@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Clean, bright theme (Material3) -->
+    <style name="Base.Theme.MyApplication" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Color scheme -->
+        <item name="colorPrimary">@color/brand_primary</item>
+        <item name="colorOnPrimary">@color/brand_onPrimary</item>
+        <item name="colorSecondary">@color/brand_secondary</item>
+        <item name="colorOnSecondary">@color/brand_onSecondary</item>
+
+        <item name="android:colorBackground">@color/brand_background</item>
+        <item name="colorSurface">@color/brand_surface</item>
+        <item name="colorOnSurface">@color/brand_onSurface</item>
+        <item name="colorSurfaceVariant">@color/brand_surfaceVariant</item>
+
+        <item name="colorError">@color/brand_error</item>
+        <item name="colorOnError">@color/brand_onError</item>
+
+        <!-- Component defaults -->
+        <item name="materialButtonStyle">@style/Widget.App.Button</item>
+        <item name="textInputStyle">@style/Widget.App.TextInputLayout</item>
+
+        <!-- Subtle window animations -->
+        <item name="android:windowAnimationStyle">@style/Window.Animation.Fade</item>
+        <item name="android:windowContentTransitions">true</item>
+    </style>
+
+    <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
+
+    <!-- Rounded, elevated primary buttons -->
+    <style name="Widget.App.Button" parent="Widget.Material3.Button">
+        <item name="cornerRadius">18dp</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="elevation">2dp</item>
+    </style>
+
+    <!-- Filled TextInput with soft surface -->
+    <style name="Widget.App.TextInputLayout" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/brand_surface</item>
+        <item name="boxStrokeColor">@color/brand_surfaceVariant</item>
+        <item name="hintTextColor">@color/brand_onSurface</item>
+        <item name="android:textColor">@color/brand_onSurface</item>
+        <item name="shapeAppearance">@style/Shape.RoundedXL</item>
+    </style>
+
+    <!-- Shapes -->
+    <style name="Shape.RoundedXL" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
+
+    <!-- Window animations -->
+    <style name="Window.Animation.Fade" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:activityOpenExitAnimation">@android:anim/fade_out</item>
+        <item name="android:activityCloseEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:activityCloseExitAnimation">@android:anim/fade_out</item>
+    </style>
+
+</resources>

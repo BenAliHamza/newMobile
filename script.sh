@@ -1,0 +1,3 @@
+find . -path "./..grade" -prune -o -path "./.git" -prune -o \
+ -path "./..idea" -prune -o -path "./app/build" -prune -o -path "./coverage" -prune -o \
+ -path "./.next" -prune -o -print > project-structure.txt
