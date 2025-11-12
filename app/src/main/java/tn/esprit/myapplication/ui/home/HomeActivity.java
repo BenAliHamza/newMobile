@@ -1,5 +1,6 @@
 package tn.esprit.myapplication.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,7 +14,9 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import tn.esprit.myapplication.R;
+import tn.esprit.myapplication.core.FirebaseManager;
 import tn.esprit.myapplication.core.SeedData;
+import tn.esprit.myapplication.ui.auth.AuthHostActivity;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -31,7 +34,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // one-shot demo data seed (safe if already present)
+        // One-shot demo data seed (safe if already present)
         SeedData.run(getApplicationContext());
 
         toolbar = findViewById(R.id.toolbar);
@@ -83,6 +86,28 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_home_top, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_sign_out) {
+            // Clear Firebase session and return to auth flow
+            FirebaseManager.signOut();
+            Intent i = new Intent(this, AuthHostActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+            return true;
+        }
+
+        // Placeholder for future "Settings"
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     // Lightweight inline placeholder for Profile tab

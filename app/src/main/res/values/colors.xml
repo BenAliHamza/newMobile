@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Modern soft palette -->
+    <!-- Material 3-inspired palette (light) -->
     <color name="brand_primary">#6750A4</color>
-    <color name="brand_onPrimary">#FFFFFF</color>
-    <color name="brand_secondary">#4FB6EC</color>
-    <color name="brand_onSecondary">#0B2A3A</color>
+    <color name="brand_onPrimary">#FFFFFFFF</color>
 
-    <color name="brand_background">#F6F7FB</color>
-    <color name="brand_onBackground">#1C1B1F</color>
+    <color name="brand_secondary">#625B71</color>
+    <color name="brand_onSecondary">#FFFFFFFF</color>
 
-    <color name="brand_surface">#FFFFFF</color>
-    <color name="brand_onSurface">#1C1B1F</color>
-    <color name="brand_surfaceVariant">#E7E0EC</color>
+    <color name="brand_background">#FFFAFAFA</color>
+    <color name="brand_surface">#FFFFFFFF</color>
+    <color name="brand_onSurface">#FF1C1B1F</color>
+    <color name="brand_surfaceVariant">#FFE7E0EC</color>
 
-    <color name="brand_error">#B00020</color>
-    <color name="brand_onError">#FFFFFF</color>
+    <color name="brand_error">#FFB3261E</color>
+    <color name="brand_onError">#FFFFFFFF</color>
 
-    <!-- Backward-compat names used in layouts -->
-    <color name="brand_white">#FFFFFFFF</color>
-    <color name="md3_background">@color/brand_background</color>
+    <!-- Optional accents -->
+    <color name="brand_outline">#FF79747E</color>
+    <color name="brand_shadow">#1F000000</color>
 </resources>

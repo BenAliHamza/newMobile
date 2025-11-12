@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">ReadyDocs</string>
     <string name="default_web_client_id">REPLACE_WITH_WEB_CLIENT_ID</string>
+    <string name="create_account">Create account</string>
+    <string name="role">Role</string>
+    <string name="password">Password</string>
+    <string name="first_name">First name</string>
+    <string name="settings">Settings</string>
+    <string name="sign_out">Sign out</string>
 
 </resources>

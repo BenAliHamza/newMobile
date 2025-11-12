@@ -15,7 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:title="Home"
-            app:menu="@menu/menu_home_top"/>
+            app:menu="@menu/menu_home_top"
+            app:popupTheme="@style/ThemeOverlay.Material3.MaterialAlertDialog" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout

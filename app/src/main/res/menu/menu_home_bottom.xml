@@ -2,18 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_indicators"
-        android:title="Indicators"
+        android:title="@string/menu_indicators_title"
         android:icon="@android:drawable/ic_menu_info_details" />
+
     <item
         android:id="@+id/menu_suivie"
-        android:title="Suivie"
+        android:title="@string/menu_suivie_title"
         android:icon="@android:drawable/ic_menu_agenda" />
+
     <item
         android:id="@+id/menu_medication"
-        android:title="Medication"
+        android:title="@string/menu_medication_title"
         android:icon="@android:drawable/ic_menu_recent_history" />
+
     <item
         android:id="@+id/menu_profile"
-        android:title="Profile"
+        android:title="@string/menu_profile_title"
         android:icon="@android:drawable/ic_menu_myplaces" />
 </menu>

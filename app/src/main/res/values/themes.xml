@@ -13,17 +13,22 @@
         <item name="colorSurface">@color/brand_surface</item>
         <item name="colorOnSurface">@color/brand_onSurface</item>
         <item name="colorSurfaceVariant">@color/brand_surfaceVariant</item>
-
         <item name="colorError">@color/brand_error</item>
         <item name="colorOnError">@color/brand_onError</item>
+        <item name="colorOutline">@color/brand_outline</item>
 
         <!-- Component defaults -->
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
         <item name="textInputStyle">@style/Widget.App.TextInputLayout</item>
+        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
 
         <!-- Subtle window animations -->
         <item name="android:windowAnimationStyle">@style/Window.Animation.Fade</item>
         <item name="android:windowContentTransitions">true</item>
+
+        <!-- Edge-to-edge with safe contrast -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
@@ -41,13 +46,16 @@
         <item name="boxStrokeColor">@color/brand_surfaceVariant</item>
         <item name="hintTextColor">@color/brand_onSurface</item>
         <item name="android:textColor">@color/brand_onSurface</item>
+        <!-- Use central shape style -->
         <item name="shapeAppearance">@style/Shape.RoundedXL</item>
     </style>
 
-    <!-- Shapes -->
-    <style name="Shape.RoundedXL" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">20dp</item>
+    <!-- Toolbar -->
+    <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@color/brand_surface</item>
+        <item name="titleTextColor">@color/brand_onSurface</item>
+        <item name="subtitleTextColor">@color/brand_onSurface</item>
+        <item name="elevation">2dp</item>
     </style>
 
     <!-- Window animations -->
