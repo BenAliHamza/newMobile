@@ -1,41 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Common -->
+
+    <!-- Screen Titles -->
+    <string name="login_title">Login</string>
+    <string name="register_title">Create account</string>
+    <string name="forgot_title">Forgot password</string>
+    <!-- Legacy aliases used by older layouts -->
+    <string name="title_forgot_password">Forgot password</string>
+
+    <!-- Common labels / hints -->
+    <string name="welcome_back">Welcome back</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
     <string name="hint_first_name">First name</string>
     <string name="hint_last_name">Last name</string>
     <string name="label_sex">Sex</string>
     <string name="label_role">Role</string>
-    <string name="offline_message">You are offline. Check your connection.</string>
-    <string name="error_email_required">Email required</string>
-    <string name="error_required">Required</string>
 
-    <!-- Login -->
-    <string name="welcome_back">Welcome back</string>
+    <!-- Spinner prompts / toasts -->
+    <string name="prompt_select_sex">Select sex</string>
+    <string name="prompt_select_role">Select role</string>
+
+    <!-- Actions -->
     <string name="action_login">Login</string>
     <string name="action_google">Continue with Google</string>
     <string name="action_create_account">Create a new account</string>
     <string name="action_forgot_password">Forgot password?</string>
-
-    <!-- Forgot password -->
-    <string name="title_forgot_password">Password reset</string>
-    <string name="action_send_reset">Send reset email</string>
+    <string name="action_back_to_login">Back to Login</string>
+    <!-- Legacy alias -->
     <string name="back_to_login">Back to Login</string>
-    <string name="msg_reset_email_sent">If that email exists, a reset link was sent.</string>
-    <string name="msg_reset_email_failed">Could not send reset email. Please try again.</string>
+    <string name="action_send_reset">Send reset email</string>
 
-    <!-- Register -->
-    <string name="title_create_account">Create account</string>
-    <string name="action_create">Create account</string>
-    <string name="back_to_login_short">Back to Login</string>
-    <string name="prompt_select_sex">Select sex</string>
-    <string name="prompt_select_role">Select role</string>
+    <!-- Messages -->
+    <string name="offline_message">You are offline. Check your connection.</string>
+    <string name="error_required">Required</string>
+    <string name="error_email_required">Email required</string>
+    <string name="error_user_not_created">User not created.</string>
+    <string name="msg_account_created">Account created.</string>
+    <string name="msg_reset_email_sent">Password reset email sent.</string>
+    <string name="msg_reset_email_failed">Could not send reset email.</string>
 
-    <!-- Spinner values (simple) -->
-    <string name="sex_male">Male</string>
-    <string name="sex_female">Female</string>
-    <string name="sex_other">Other</string>
-    <string name="role_doctor">DOCTOR</string>
-    <string name="role_patient">PATIENT</string>
+    <!-- Google messages -->
+    <string name="google_cancelled">Google Sign-In canceled.</string>
+    <string name="google_null_account">Google account is null.</string>
+    <string name="google_missing_token">Missing ID token. Add SHA-1 in Firebase and re-sync.</string>
+    <string name="google_failed">Google Sign-In failed: %1$d</string>
+    <string name="google_configure_sha1">Configure SHA-1 in Firebase &amp; re-download google-services.json.</string>
+    <string name="google_missing_res_id">Missing default_web_client_id. Add SHA-1 &amp; re-sync.</string>
+
 </resources>

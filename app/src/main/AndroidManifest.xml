@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Needed for Firebase + connectivity checks -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Network permissions for Firebase + connectivity checks -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -16,14 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
 
-        <!-- Launcher: hosts the Navigation-based auth flow and session guard -->
+        <!-- Auth host is the launcher (Navigation-based auth flow) -->
         <activity
             android:name=".ui.auth.AuthHostActivity"
-            android:exported="true"
-            android:theme="@style/Theme.MyApplication">
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
@@ -32,11 +30,10 @@
             android:name=".ui.home.HomeActivity"
             android:exported="false" />
 
-        <!-- Profile -->
+        <!-- (Optional) Profile screen activity if you keep it -->
         <activity
             android:name=".ui.profile.ProfileActivity"
             android:exported="false" />
 
-        <!-- NOTE: LoginActivity / RegisterActivity removed (you deleted them). -->
     </application>
 </manifest>

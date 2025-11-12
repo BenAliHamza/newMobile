@@ -2,15 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Optional: keep Settings if you plan to use it later -->
     <item
         android:id="@+id/action_settings"
-        android:title="@string/settings"
+        android:title="@string/menu_settings"
         android:icon="@android:drawable/ic_menu_preferences"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_sign_out"
-        android:title="@string/sign_out"
+        android:title="@string/menu_sign_out"
         android:icon="@android:drawable/ic_lock_power_off"
         app:showAsAction="ifRoom" />
 </menu>

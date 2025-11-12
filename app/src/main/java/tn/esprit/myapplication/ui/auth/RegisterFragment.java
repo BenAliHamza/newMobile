@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import tn.esprit.myapplication.R;
@@ -43,7 +42,6 @@ public class RegisterFragment extends Fragment {
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(v, savedInstanceState);
 
-        // Spinners (use string-arrays from resources)
         ArrayAdapter<CharSequence> sexAdapter = ArrayAdapter.createFromResource(
                 requireContext(), R.array.sex_options, android.R.layout.simple_spinner_dropdown_item);
         binding.spinnerSex.setAdapter(sexAdapter);
@@ -63,10 +61,8 @@ public class RegisterFragment extends Fragment {
         String email     = String.valueOf(binding.inputEmail.getText()).trim();
         String password  = String.valueOf(binding.inputPassword.getText());
 
-        String sex       = binding.spinnerSex.getSelectedItem() != null
-                ? binding.spinnerSex.getSelectedItem().toString() : "";
-        String roleStr   = binding.spinnerRole.getSelectedItem() != null
-                ? binding.spinnerRole.getSelectedItem().toString() : "";
+        String sex       = binding.spinnerSex.getSelectedItem() != null ? binding.spinnerSex.getSelectedItem().toString() : "";
+        String roleStr   = binding.spinnerRole.getSelectedItem() != null ? binding.spinnerRole.getSelectedItem().toString() : "";
 
         boolean invalid = false;
         if (TextUtils.isEmpty(firstName)) { binding.inputLayoutFirstName.setError(getString(R.string.error_required)); invalid = true; } else binding.inputLayoutFirstName.setError(null);
@@ -83,14 +79,13 @@ public class RegisterFragment extends Fragment {
         }
 
         setLoading(true);
-
         FirebaseManager.auth()
                 .createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(result -> {
                     FirebaseUser fu = result.getUser();
                     if (fu == null) {
                         setLoading(false);
-                        Toast.makeText(requireContext(), "User not created.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(requireContext(), getString(R.string.error_user_not_created), Toast.LENGTH_LONG).show();
                         return;
                     }
                     String uid = fu.getUid();
@@ -101,8 +96,8 @@ public class RegisterFragment extends Fragment {
                             lastName,
                             sex,
                             role,
-                            true,   // isFirstLogin
-                            "",     // imageUrl default
+                            true,
+                            "",
                             email
                     );
 
@@ -111,8 +106,7 @@ public class RegisterFragment extends Fragment {
                             .set(user)
                             .addOnSuccessListener(aVoid -> {
                                 setLoading(false);
-                                Toast.makeText(requireContext(), getString(R.string.action_create), Toast.LENGTH_SHORT).show();
-                                // User is signed-in after create; go Home
+                                Toast.makeText(requireContext(), getString(R.string.msg_account_created), Toast.LENGTH_SHORT).show();
                                 Intent i = new Intent(requireContext(), HomeActivity.class);
                                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(i);

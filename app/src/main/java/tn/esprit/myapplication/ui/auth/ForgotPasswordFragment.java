@@ -34,7 +34,6 @@ public class ForgotPasswordFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(v, savedInstanceState);
-
         binding.btnSend.setOnClickListener(view -> sendReset());
         binding.btnBackToLogin.setOnClickListener(view ->
                 NavHostFragment.findNavController(this).popBackStack());

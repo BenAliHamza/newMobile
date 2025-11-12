@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Spinners pull from strings to keep a single source of truth -->
     <string-array name="sex_options">
         <item>@string/sex_male</item>
         <item>@string/sex_female</item>

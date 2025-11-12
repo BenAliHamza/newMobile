@@ -43,7 +43,7 @@ public class LoginFragment extends Fragment {
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getData() == null) {
                     showLoading(false);
-                    Toast.makeText(requireContext(), "Google Sign-In canceled.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), getString(R.string.google_cancelled), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
@@ -51,13 +51,13 @@ public class LoginFragment extends Fragment {
                     GoogleSignInAccount account = task.getResult(ApiException.class);
                     if (account == null) {
                         showLoading(false);
-                        Toast.makeText(requireContext(), "Google account is null.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(requireContext(), getString(R.string.google_null_account), Toast.LENGTH_LONG).show();
                         return;
                     }
                     String idToken = account.getIdToken();
                     if (TextUtils.isEmpty(idToken)) {
                         showLoading(false);
-                        Toast.makeText(requireContext(), "Missing ID token. Add SHA-1 in Firebase and re-sync.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(requireContext(), getString(R.string.google_missing_token), Toast.LENGTH_LONG).show();
                         return;
                     }
                     AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
@@ -69,7 +69,7 @@ public class LoginFragment extends Fragment {
                             });
                 } catch (ApiException e) {
                     showLoading(false);
-                    Toast.makeText(requireContext(), "Google Sign-In failed: " + e.getStatusCode(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(requireContext(), getString(R.string.google_failed, e.getStatusCode()), Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -115,11 +115,11 @@ public class LoginFragment extends Fragment {
             try {
                 String check = getString(R.string.default_web_client_id);
                 if (TextUtils.isEmpty(check) || "REPLACE_WITH_WEB_CLIENT_ID".equalsIgnoreCase(check)) {
-                    Toast.makeText(requireContext(), "Configure SHA-1 in Firebase & re-download google-services.json.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(requireContext(), getString(R.string.google_configure_sha1), Toast.LENGTH_LONG).show();
                     return;
                 }
             } catch (Resources.NotFoundException e) {
-                Toast.makeText(requireContext(), "Missing default_web_client_id. Add SHA-1 & re-sync.", Toast.LENGTH_LONG).show();
+                Toast.makeText(requireContext(), getString(R.string.google_missing_res_id), Toast.LENGTH_LONG).show();
                 return;
             }
             showLoading(true);
@@ -164,7 +164,7 @@ public class LoginFragment extends Fragment {
             return;
         }
         String email = fu.getEmail() == null ? "" : fu.getEmail();
-        DataSeeder.runIfNeeded(fu.getUid(), email)
+        tn.esprit.myapplication.seed.DataSeeder.runIfNeeded(fu.getUid(), email)
                 .addOnCompleteListener(done -> {
                     showLoading(false);
                     Intent i = new Intent(requireContext(), HomeActivity.class);

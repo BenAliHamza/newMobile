@@ -12,9 +12,9 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import tn.esprit.myapplication.R;
-import tn.esprit.myapplication.core.FirebaseManager;
 import tn.esprit.myapplication.core.SeedData;
 import tn.esprit.myapplication.ui.auth.AuthHostActivity;
 
@@ -49,10 +49,22 @@ public class HomeActivity extends AppCompatActivity {
                     .setReorderingAllowed(true)
                     .add(R.id.home_container, indicatorsFragment, "indicators")
                     .commit();
-            setTitle("Indicators");
+            setTitle(getString(R.string.menu_indicators_title));
         }
 
         bottomNav.setOnItemSelectedListener(this::onBottomItemSelected);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Session guard: if user is null, go to Auth
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Intent i = new Intent(this, AuthHostActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+        }
     }
 
     private boolean onBottomItemSelected(@NonNull MenuItem item) {
@@ -61,13 +73,13 @@ public class HomeActivity extends AppCompatActivity {
 
         int id = item.getItemId();
         if (id == R.id.menu_indicators) {
-            target = indicatorsFragment; title = "Indicators";
+            target = indicatorsFragment; title = getString(R.string.menu_indicators_title);
         } else if (id == R.id.menu_suivie) {
-            target = suivieFragment; title = "Suivie";
+            target = suivieFragment; title = getString(R.string.menu_suivie_title);
         } else if (id == R.id.menu_medication) {
-            target = medicationFragment; title = "Medication";
+            target = medicationFragment; title = getString(R.string.menu_medication_title);
         } else if (id == R.id.menu_profile) {
-            target = profileFragment; title = "Profile";
+            target = profileFragment; title = getString(R.string.menu_profile_title);
         }
 
         if (target == null) return false;
@@ -90,23 +102,14 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_sign_out) {
-            // Clear Firebase session and return to auth flow
-            FirebaseManager.signOut();
+        if (item.getItemId() == R.id.action_sign_out) {
+            FirebaseAuth.getInstance().signOut();
             Intent i = new Intent(this, AuthHostActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
             finish();
             return true;
         }
-
-        // Placeholder for future "Settings"
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -126,7 +129,7 @@ public class HomeActivity extends AppCompatActivity {
             root.setPadding(pad,pad,pad,pad);
 
             com.google.android.material.textview.MaterialTextView tv = new com.google.android.material.textview.MaterialTextView(ctx);
-            tv.setText("Profile");
+            tv.setText(getString(R.string.menu_profile_title));
             tv.setTextAppearance(ctx, com.google.android.material.R.style.TextAppearance_Material3_HeadlineSmall);
             root.addView(tv);
             return root;
