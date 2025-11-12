@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spinners pull from strings to keep a single source of truth -->
+    <string-array name="sex_options">
+        <item>@string/sex_male</item>
+        <item>@string/sex_female</item>
+        <item>@string/sex_other</item>
+    </string-array>
+
+    <string-array name="role_options">
+        <item>@string/role_doctor</item>
+        <item>@string/role_patient</item>
+    </string-array>
+</resources>

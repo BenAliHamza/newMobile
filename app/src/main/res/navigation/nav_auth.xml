@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_auth"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="tn.esprit.myapplication.ui.auth.LoginFragment"
+        android:label="login">
+        <action
+            android:id="@+id/action_login_to_register"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_login_to_forgotPassword"
+            app:destination="@id/forgotPasswordFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="tn.esprit.myapplication.ui.auth.RegisterFragment"
+        android:label="register" />
+
+    <fragment
+        android:id="@+id/forgotPasswordFragment"
+        android:name="tn.esprit.myapplication.ui.auth.ForgotPasswordFragment"
+        android:label="forgot_password" />
+
+</navigation>
