@@ -53,6 +53,11 @@
     <string name="msg_sign_in_success">Signed in successfully.</string>
     <string name="error_fix_fields">Please correct the highlighted fields.</string>
 
+    <!-- New: Google profile + generic errors -->
+    <string name="dialog_choose_role_title">Choose your role</string>
+    <string name="msg_google_role_required">You must choose a role to continue.</string>
+    <string name="error_generic_operation_failed">Operation failed. Please try again.</string>
+
     <!-- Google Sign-In messages -->
     <string name="google_cancelled">Google Sign-In canceled.</string>
     <string name="google_null_account">Google account is null.</string>
@@ -75,6 +80,7 @@
     <string name="menu_suivie_title">Suivie</string>
     <string name="menu_medication_title">Medication</string>
     <string name="menu_profile_title">Profile</string>
+    <string name="error_no_account_for_email">No account found with this email.</string>
 
     <!-- Sex / Roles -->
     <string name="sex_male">Male</string>

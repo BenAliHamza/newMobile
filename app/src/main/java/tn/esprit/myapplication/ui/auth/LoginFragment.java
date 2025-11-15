@@ -25,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -39,7 +40,8 @@ public class LoginFragment extends Fragment {
     private FragmentLoginBinding binding;
     private GoogleSignInClient googleClient;
     private LoginViewModel viewModel;
-    private boolean isGoogleConfigured = false;
+
+    private boolean roleDialogShown = false;
 
     private final ActivityResultLauncher<Intent> googleLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -96,9 +98,13 @@ public class LoginFragment extends Fragment {
             if (ok != null && ok) {
                 FirebaseUser fu = FirebaseManager.auth().getCurrentUser();
                 if (fu != null) {
-                    // Centralized nav helper; clears back stack and opens Home
                     AuthUiNavigator.goToHomeAndClearTask(requireContext());
                 }
+            }
+        });
+        viewModel.needsGoogleProfile.observe(getViewLifecycleOwner(), need -> {
+            if (need != null && need && !roleDialogShown) {
+                showRoleDialogForGoogle();
             }
         });
 
@@ -112,21 +118,34 @@ public class LoginFragment extends Fragment {
             return false;
         });
 
-        // Google: safe configuration
-        configureGoogleSignIn();
+        // Google
+        String webClientId;
+        try {
+            webClientId = getString(R.string.default_web_client_id);
+        } catch (Resources.NotFoundException ex) {
+            webClientId = null;
+        }
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestIdToken(webClientId)
+                .build();
+        googleClient = GoogleSignIn.getClient(requireContext(), gso);
 
         binding.btnGoogle.setOnClickListener(v12 -> {
             if (!NetworkUtil.isOnline(requireContext())) {
                 Toast.makeText(requireContext(), getString(R.string.offline_message), Toast.LENGTH_SHORT).show();
                 return;
             }
-
-            if (!isGoogleConfigured || googleClient == null) {
-                // Config issue (missing / placeholder client ID)
-                Toast.makeText(requireContext(), getString(R.string.google_configure_sha1), Toast.LENGTH_LONG).show();
+            try {
+                String check = getString(R.string.default_web_client_id);
+                if (TextUtils.isEmpty(check) || "REPLACE_WITH_WEB_CLIENT_ID".equalsIgnoreCase(check)) {
+                    Toast.makeText(requireContext(), getString(R.string.google_configure_sha1), Toast.LENGTH_LONG).show();
+                    return;
+                }
+            } catch (Resources.NotFoundException e) {
+                Toast.makeText(requireContext(), getString(R.string.google_missing_res_id), Toast.LENGTH_LONG).show();
                 return;
             }
-
             setLoading(true);
             googleLauncher.launch(googleClient.getSignInIntent());
         });
@@ -136,36 +155,6 @@ public class LoginFragment extends Fragment {
                 v13 -> NavHostFragment.findNavController(this).navigate(R.id.action_login_to_register));
         binding.btnForgot.setOnClickListener(
                 v14 -> NavHostFragment.findNavController(this).navigate(R.id.action_login_to_forgotPassword));
-    }
-
-    private void configureGoogleSignIn() {
-        String clientId = null;
-        boolean valid = false;
-
-        try {
-            String check = getString(R.string.default_web_client_id);
-            if (!TextUtils.isEmpty(check)
-                    && !"REPLACE_WITH_WEB_CLIENT_ID".equalsIgnoreCase(check)) {
-                clientId = check;
-                valid = true;
-            }
-        } catch (Resources.NotFoundException ex) {
-            valid = false;
-        }
-
-        isGoogleConfigured = valid;
-
-        if (!valid) {
-            googleClient = null;
-            return;
-        }
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestIdToken(clientId)
-                .build();
-
-        googleClient = GoogleSignIn.getClient(requireContext(), gso);
     }
 
     private void attemptLogin() {
@@ -208,6 +197,26 @@ public class LoginFragment extends Fragment {
         }
 
         viewModel.signInWithEmail(email, password);
+    }
+
+    private void showRoleDialogForGoogle() {
+        roleDialogShown = true;
+
+        final String[] options = new String[]{
+                getString(R.string.role_doctor),
+                getString(R.string.role_patient)
+        };
+
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.dialog_choose_role_title)
+                .setItems(options, (dialog, which) -> {
+                    String chosen = options[which];
+                    viewModel.completeGoogleProfileWithRole(chosen);
+                    dialog.dismiss();
+                })
+                .setCancelable(false)
+                .setOnDismissListener(d -> roleDialogShown = false)
+                .show();
     }
 
     private void setLoading(boolean show) {

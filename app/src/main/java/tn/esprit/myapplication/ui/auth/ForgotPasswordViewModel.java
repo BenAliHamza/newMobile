@@ -11,6 +11,7 @@ import tn.esprit.myapplication.data.auth.AuthRepository;
 /**
  * ForgotPasswordViewModel
  * - Sends password reset email via AuthRepository.
+ * - Lets Firebase decide whether the email exists or not (always "email sent" if request ok).
  */
 public class ForgotPasswordViewModel extends ViewModel {
 
@@ -32,7 +33,7 @@ public class ForgotPasswordViewModel extends ViewModel {
         repo.sendPasswordReset(email)
                 .addOnSuccessListener(v -> {
                     _loading.setValue(false);
-                    _sent.setValue(true);
+                    _sent.setValue(true);   // UI shows "email sent" toast
                 })
                 .addOnFailureListener(e -> {
                     _loading.setValue(false);

@@ -83,7 +83,8 @@ public class RegisterFragment extends Fragment {
     private void submit() {
         if (binding == null) return;
 
-        String fullName    = textOf(binding.fullNameEdit);
+        String firstName   = textOf(binding.firstNameEdit);
+        String lastName    = textOf(binding.lastNameEdit);
         String email       = textOf(binding.emailEdit);
         String phone       = textOf(binding.phoneEdit); // optional, not yet persisted
         String password    = textOf(binding.passwordEdit);
@@ -93,15 +94,23 @@ public class RegisterFragment extends Fragment {
 
         boolean hasError = false;
 
-        // Full name
-        if (TextUtils.isEmpty(fullName)) {
-            binding.fullNameLayout.setError(getString(R.string.error_required));
+        // First name (required)
+        if (TextUtils.isEmpty(firstName)) {
+            binding.firstNameLayout.setError(getString(R.string.error_required));
             hasError = true;
         } else {
-            binding.fullNameLayout.setError(null);
+            binding.firstNameLayout.setError(null);
         }
 
-        // Email
+        // Last name (required)
+        if (TextUtils.isEmpty(lastName)) {
+            binding.lastNameLayout.setError(getString(R.string.error_required));
+            hasError = true;
+        } else {
+            binding.lastNameLayout.setError(null);
+        }
+
+        // Email (required)
         if (TextUtils.isEmpty(email)) {
             binding.emailLayout.setError(getString(R.string.error_email_required));
             hasError = true;
@@ -134,7 +143,7 @@ public class RegisterFragment extends Fragment {
             binding.confirmPasswordLayout.setError(null);
         }
 
-        // Role
+        // Role (required)
         if (TextUtils.isEmpty(roleText)) {
             binding.roleLayout.setError(getString(R.string.prompt_select_role));
             hasError = true;
@@ -142,7 +151,7 @@ public class RegisterFragment extends Fragment {
             binding.roleLayout.setError(null);
         }
 
-        // Sex
+        // Sex (required for now)
         if (TextUtils.isEmpty(sexText)) {
             binding.sexLayout.setError(getString(R.string.prompt_select_sex));
             hasError = true;
@@ -154,17 +163,6 @@ public class RegisterFragment extends Fragment {
             return;
         }
 
-        // Split full name into first / last in a simple way
-        String firstName = "";
-        String lastName  = "";
-        String[] parts = fullName.trim().split("\\s+", 2);
-        if (parts.length > 0) {
-            firstName = parts[0];
-        }
-        if (parts.length > 1) {
-            lastName = parts[1];
-        }
-
         Role role = Role.fromString(roleText);
 
         User u = new User();
@@ -174,7 +172,7 @@ public class RegisterFragment extends Fragment {
         u.setRole(role);
         u.setIsFirstLogin(true);
         u.setImageUrl(null); // not set yet, kept explicit
-        u.setEmail(email);   // will be normalized inside ViewModel
+        u.setEmail(email);   // will be normalized inside ViewModel if needed
 
         vm.register(email, password, u);
     }
@@ -184,7 +182,8 @@ public class RegisterFragment extends Fragment {
 
         binding.loadingOverlay.getRoot().setVisibility(isLoading ? View.VISIBLE : View.GONE);
 
-        binding.fullNameLayout.setEnabled(!isLoading);
+        binding.firstNameLayout.setEnabled(!isLoading);
+        binding.lastNameLayout.setEnabled(!isLoading);
         binding.emailLayout.setEnabled(!isLoading);
         binding.phoneLayout.setEnabled(!isLoading);
         binding.passwordLayout.setEnabled(!isLoading);
