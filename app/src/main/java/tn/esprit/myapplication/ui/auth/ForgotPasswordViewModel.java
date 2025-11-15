@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import tn.esprit.myapplication.data.auth.AuthErrorMapper;
 import tn.esprit.myapplication.data.auth.AuthRepository;
 
 /**
@@ -25,7 +26,7 @@ public class ForgotPasswordViewModel extends ViewModel {
     public LiveData<Boolean> sent = _sent;
 
     public void sendReset(@NonNull String email) {
-        if (_loading.getValue() != null && _loading.getValue()) return;
+        if (Boolean.TRUE.equals(_loading.getValue())) return;
         _loading.setValue(true);
 
         repo.sendPasswordReset(email)
@@ -35,7 +36,7 @@ public class ForgotPasswordViewModel extends ViewModel {
                 })
                 .addOnFailureListener(e -> {
                     _loading.setValue(false);
-                    _message.setValue(e.getMessage());
+                    _message.setValue(AuthErrorMapper.toMessage(e));
                 });
     }
 }

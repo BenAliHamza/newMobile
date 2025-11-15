@@ -19,7 +19,6 @@ import tn.esprit.myapplication.R;
 import tn.esprit.myapplication.data.Role;
 import tn.esprit.myapplication.data.User;
 import tn.esprit.myapplication.databinding.FragmentRegisterBinding;
-import tn.esprit.myapplication.util.NetworkUtil;
 
 public class RegisterFragment extends Fragment {
 
@@ -41,7 +40,7 @@ public class RegisterFragment extends Fragment {
 
         vm = new ViewModelProvider(this).get(RegisterViewModel.class);
 
-        // Adapters for exposed dropdowns
+        // Dropdown adapters
         ArrayAdapter<String> sexAdapter = new ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_list_item_1,
@@ -56,25 +55,15 @@ public class RegisterFragment extends Fragment {
         binding.sexDropdown.setAdapter(sexAdapter);
         binding.roleDropdown.setAdapter(roleAdapter);
 
-        binding.btnCreateAccount.setOnClickListener(v -> submit());
-
-        // Back to login link
+        // Actions
+        binding.registerButton.setOnClickListener(v -> submit());
         binding.signInLink.setOnClickListener(v ->
                 NavHostFragment.findNavController(this).popBackStack());
 
         // Observers
         vm.loading.observe(getViewLifecycleOwner(), loading -> {
             boolean isLoading = loading != null && loading;
-            setLoadingOverlay(isLoading);
-
-            binding.inputEmail.setEnabled(!isLoading);
-            binding.inputPassword.setEnabled(!isLoading);
-            binding.inputFirstName.setEnabled(!isLoading);
-            binding.inputLastName.setEnabled(!isLoading);
-            binding.sexDropdown.setEnabled(!isLoading);
-            binding.roleDropdown.setEnabled(!isLoading);
-            binding.btnCreateAccount.setEnabled(!isLoading);
-            binding.signInLink.setEnabled(!isLoading);
+            setLoading(isLoading);
         });
 
         vm.message.observe(getViewLifecycleOwner(), msg -> {
@@ -86,117 +75,130 @@ public class RegisterFragment extends Fragment {
         vm.registered.observe(getViewLifecycleOwner(), ok -> {
             if (ok != null && ok) {
                 Toast.makeText(requireContext(), getString(R.string.msg_account_created), Toast.LENGTH_SHORT).show();
-                // Go back to login screen
                 NavHostFragment.findNavController(this).popBackStack();
             }
         });
     }
 
     private void submit() {
-        clearFieldErrors();
+        if (binding == null) return;
 
-        String email     = binding.inputEmail.getText() != null ? binding.inputEmail.getText().toString().trim() : "";
-        String password  = binding.inputPassword.getText() != null ? binding.inputPassword.getText().toString() : "";
-        String firstName = binding.inputFirstName.getText() != null ? binding.inputFirstName.getText().toString().trim() : "";
-        String lastName  = binding.inputLastName.getText() != null ? binding.inputLastName.getText().toString().trim() : "";
+        String fullName    = textOf(binding.fullNameEdit);
+        String email       = textOf(binding.emailEdit);
+        String phone       = textOf(binding.phoneEdit); // optional, not yet persisted
+        String password    = textOf(binding.passwordEdit);
+        String confirmPass = textOf(binding.confirmPasswordEdit);
+        String sexText     = textOf(binding.sexDropdown);
+        String roleText    = textOf(binding.roleDropdown);
 
-        String sex       = binding.sexDropdown.getText() != null ? binding.sexDropdown.getText().toString().trim() : "";
-        String roleStr   = binding.roleDropdown.getText() != null ? binding.roleDropdown.getText().toString().trim() : "";
+        boolean hasError = false;
 
-        boolean valid = true;
-
-        if (TextUtils.isEmpty(firstName)) {
-            binding.inputLayoutFirstName.setError(getString(R.string.error_required));
-            valid = false;
+        // Full name
+        if (TextUtils.isEmpty(fullName)) {
+            binding.fullNameLayout.setError(getString(R.string.error_required));
+            hasError = true;
+        } else {
+            binding.fullNameLayout.setError(null);
         }
 
-        if (TextUtils.isEmpty(lastName)) {
-            binding.inputLayoutLastName.setError(getString(R.string.error_required));
-            valid = false;
-        }
-
+        // Email
         if (TextUtils.isEmpty(email)) {
-            binding.inputLayoutEmail.setError(getString(R.string.error_email_required));
-            valid = false;
+            binding.emailLayout.setError(getString(R.string.error_email_required));
+            hasError = true;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.inputLayoutEmail.setError(getString(R.string.error_invalid_email));
-            valid = false;
+            binding.emailLayout.setError(getString(R.string.error_invalid_email));
+            hasError = true;
+        } else {
+            binding.emailLayout.setError(null);
         }
 
+        // Password
         if (TextUtils.isEmpty(password)) {
-            binding.inputLayoutPassword.setError(getString(R.string.error_required));
-            valid = false;
+            binding.passwordLayout.setError(getString(R.string.error_required));
+            hasError = true;
         } else if (password.length() < 6) {
-            binding.inputLayoutPassword.setError(getString(R.string.error_password_min));
-            valid = false;
+            binding.passwordLayout.setError(getString(R.string.error_password_min));
+            hasError = true;
+        } else {
+            binding.passwordLayout.setError(null);
         }
 
-        if (TextUtils.isEmpty(roleStr)) {
-            binding.inputLayoutRole.setError(getString(R.string.error_required));
-            valid = false;
+        // Confirm password
+        if (TextUtils.isEmpty(confirmPass)) {
+            binding.confirmPasswordLayout.setError(getString(R.string.error_required));
+            hasError = true;
+        } else if (!password.equals(confirmPass)) {
+            binding.confirmPasswordLayout.setError(getString(R.string.error_password_mismatch));
+            hasError = true;
+        } else {
+            binding.confirmPasswordLayout.setError(null);
         }
 
-        if (TextUtils.isEmpty(sex)) {
-            binding.inputLayoutSex.setError(getString(R.string.error_required));
-            valid = false;
+        // Role
+        if (TextUtils.isEmpty(roleText)) {
+            binding.roleLayout.setError(getString(R.string.prompt_select_role));
+            hasError = true;
+        } else {
+            binding.roleLayout.setError(null);
         }
 
-        if (!valid) {
+        // Sex
+        if (TextUtils.isEmpty(sexText)) {
+            binding.sexLayout.setError(getString(R.string.prompt_select_sex));
+            hasError = true;
+        } else {
+            binding.sexLayout.setError(null);
+        }
+
+        if (hasError) {
             return;
         }
 
-        if (!NetworkUtil.isOnline(requireContext())) {
-            Toast.makeText(requireContext(), getString(R.string.offline_message), Toast.LENGTH_SHORT).show();
-            return;
+        // Split full name into first / last in a simple way
+        String firstName = "";
+        String lastName  = "";
+        String[] parts = fullName.trim().split("\\s+", 2);
+        if (parts.length > 0) {
+            firstName = parts[0];
+        }
+        if (parts.length > 1) {
+            lastName = parts[1];
         }
 
-        Role role = Role.PATIENT;
-        if ("DOCTOR".equalsIgnoreCase(roleStr) || getString(R.string.role_doctor).equalsIgnoreCase(roleStr)) {
-            role = Role.DOCTOR;
-        }
+        Role role = Role.fromString(roleText);
 
         User u = new User();
-        u.setEmail(email);
         u.setFirstName(firstName);
         u.setLastName(lastName);
-        u.setSex(sex);
+        u.setSex(sexText);
         u.setRole(role);
+        u.setIsFirstLogin(true);
+        u.setImageUrl(null); // not set yet, kept explicit
+        u.setEmail(email);   // will be normalized inside ViewModel
 
         vm.register(email, password, u);
     }
 
-    private void clearFieldErrors() {
-        binding.inputLayoutFirstName.setError(null);
-        binding.inputLayoutLastName.setError(null);
-        binding.inputLayoutEmail.setError(null);
-        binding.inputLayoutPassword.setError(null);
-        binding.inputLayoutRole.setError(null);
-        binding.inputLayoutSex.setError(null);
+    private void setLoading(boolean isLoading) {
+        if (binding == null) return;
+
+        binding.loadingOverlay.getRoot().setVisibility(isLoading ? View.VISIBLE : View.GONE);
+
+        binding.fullNameLayout.setEnabled(!isLoading);
+        binding.emailLayout.setEnabled(!isLoading);
+        binding.phoneLayout.setEnabled(!isLoading);
+        binding.passwordLayout.setEnabled(!isLoading);
+        binding.confirmPasswordLayout.setEnabled(!isLoading);
+        binding.roleLayout.setEnabled(!isLoading);
+        binding.sexLayout.setEnabled(!isLoading);
+        binding.registerButton.setEnabled(!isLoading);
+        binding.signInLink.setEnabled(!isLoading);
     }
 
-    private void setLoadingOverlay(boolean show) {
-        View overlay = binding.loadingOverlay.getRoot();
-        if (show) {
-            overlay.setClickable(true);
-            if (overlay.getVisibility() != View.VISIBLE) {
-                overlay.setAlpha(0f);
-                overlay.setVisibility(View.VISIBLE);
-                overlay.animate()
-                        .alpha(1f)
-                        .setDuration(200L)
-                        .setListener(null);
-            }
-        } else {
-            if (overlay.getVisibility() == View.VISIBLE) {
-                overlay.animate()
-                        .alpha(0f)
-                        .setDuration(200L)
-                        .withEndAction(() -> {
-                            overlay.setVisibility(View.GONE);
-                            overlay.setAlpha(1f);
-                        });
-            }
-        }
+    private String textOf(@Nullable android.widget.TextView tv) {
+        return tv != null && tv.getText() != null
+                ? tv.getText().toString().trim()
+                : "";
     }
 
     @Override

@@ -9,12 +9,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
 import tn.esprit.myapplication.data.User;
+import tn.esprit.myapplication.data.auth.AuthErrorMapper;
 import tn.esprit.myapplication.data.auth.AuthRepository;
 
 /**
  * RegisterViewModel
  * - Handles email/password account creation and initial profile write.
- * - Sends a verification email after registration.
+ * - Minor tweak: ensure profile email equals auth email (source of truth).
  */
 public class RegisterViewModel extends ViewModel {
 
@@ -32,29 +33,23 @@ public class RegisterViewModel extends ViewModel {
     public void register(@NonNull String email,
                          @NonNull String password,
                          @NonNull User profile) {
-        if (_loading.getValue() != null && _loading.getValue()) return;
+        if (Boolean.TRUE.equals(_loading.getValue())) return;
         _loading.setValue(true);
 
         repo.registerWithEmail(email, password)
                 .continueWithTask(task -> {
                     if (!task.isSuccessful()) {
-                        throw task.getException();
+                        throw task.getException() != null
+                                ? task.getException()
+                                : new IllegalStateException("Registration failed.");
                     }
-
                     AuthResult ar = task.getResult();
                     FirebaseUser fu = ar != null ? ar.getUser() : null;
                     if (fu == null) {
                         throw new IllegalStateException("User not created.");
                     }
-
-                    // Normalize profile email to the one from auth (source of truth)
+                    // Normalize profile email to the one from auth
                     profile.setEmail(fu.getEmail() == null ? email : fu.getEmail());
-
-                    // Fire off verification email (do not fail registration if this fails).
-                    fu.sendEmailVerification()
-                            .addOnFailureListener(e -> _message.postValue(e.getMessage()));
-
-                    // Persist user profile in Firestore.
                     return repo.createUserProfile(fu.getUid(), profile);
                 })
                 .addOnSuccessListener(aVoid -> {
@@ -63,7 +58,7 @@ public class RegisterViewModel extends ViewModel {
                 })
                 .addOnFailureListener(e -> {
                     _loading.setValue(false);
-                    _message.setValue(e.getMessage());
+                    _message.setValue(AuthErrorMapper.toMessage(e));
                 });
     }
 }

@@ -3,11 +3,9 @@ package tn.esprit.myapplication.ui.auth;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -52,27 +50,13 @@ public class ForgotPasswordFragment extends Fragment {
             }
         });
 
-        // Focus email for faster interaction
-        binding.inputEmail.requestFocus();
-
         binding.btnSend.setOnClickListener(view -> sendReset());
         binding.btnBackToLogin.setOnClickListener(view ->
                 NavHostFragment.findNavController(this).popBackStack());
-
-        // Allow IME "Done" to trigger reset
-        binding.inputEmail.setOnEditorActionListener((tv, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE ||
-                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER
-                            && event.getAction() == KeyEvent.ACTION_DOWN)) {
-                sendReset();
-                return true;
-            }
-            return false;
-        });
     }
 
     private void sendReset() {
-        binding.inputLayoutEmail.setError(null);
+        if (binding == null) return;
 
         String email = String.valueOf(binding.inputEmail.getText()).trim();
 
@@ -82,6 +66,8 @@ public class ForgotPasswordFragment extends Fragment {
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.inputLayoutEmail.setError(getString(R.string.error_invalid_email));
             return;
+        } else {
+            binding.inputLayoutEmail.setError(null);
         }
 
         if (!NetworkUtil.isOnline(requireContext())) {
@@ -94,29 +80,7 @@ public class ForgotPasswordFragment extends Fragment {
 
     private void setLoading(boolean loading) {
         if (binding == null) return;
-        View overlay = binding.loadingOverlay.getRoot();
-        if (loading) {
-            overlay.setClickable(true);
-            if (overlay.getVisibility() != View.VISIBLE) {
-                overlay.setAlpha(0f);
-                overlay.setVisibility(View.VISIBLE);
-                overlay.animate()
-                        .alpha(1f)
-                        .setDuration(200L)
-                        .setListener(null);
-            }
-        } else {
-            if (overlay.getVisibility() == View.VISIBLE) {
-                overlay.animate()
-                        .alpha(0f)
-                        .setDuration(200L)
-                        .withEndAction(() -> {
-                            overlay.setVisibility(View.GONE);
-                            overlay.setAlpha(1f);
-                        });
-            }
-        }
-
+        binding.loadingOverlay.getRoot().setVisibility(loading ? View.VISIBLE : View.GONE);
         binding.btnSend.setEnabled(!loading);
         binding.btnBackToLogin.setEnabled(!loading);
         binding.inputEmail.setEnabled(!loading);
