@@ -120,6 +120,7 @@
 ./app/src/main/java/tn/esprit/myapplication/ui/auth/RegisterFragment.java
 ./app/src/main/java/tn/esprit/myapplication/ui/auth/RegisterViewModel.java
 ./app/src/main/java/tn/esprit/myapplication/ui/auth/LoginViewModel.java
+./app/src/main/java/tn/esprit/myapplication/ui/auth/AuthUiNavigator.java
 ./app/src/main/java/tn/esprit/myapplication/ui/auth/ForgotPasswordViewModel.java
 ./app/src/main/java/tn/esprit/myapplication/ui/auth/ForgotPasswordFragment.java
 ./app/src/main/java/tn/esprit/myapplication/ui/profile
@@ -134,11 +135,14 @@
 ./app/src/main/java/tn/esprit/myapplication/util/NetworkUtil.java
 ./app/src/main/java/tn/esprit/myapplication/data
 ./app/src/main/java/tn/esprit/myapplication/data/auth
+./app/src/main/java/tn/esprit/myapplication/data/auth/AuthErrorMapper.java
 ./app/src/main/java/tn/esprit/myapplication/data/auth/AuthRepository.java
 ./app/src/main/java/tn/esprit/myapplication/data/User.java
 ./app/src/main/java/tn/esprit/myapplication/data/Role.java
 ./app/src/main/assets
 ./script.sh
+./docs
+./docs/README_AUTH.md
 ./local.properties
 ./gradle
 ./gradle/libs.versions.toml

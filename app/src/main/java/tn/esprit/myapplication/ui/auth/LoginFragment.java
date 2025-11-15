@@ -39,6 +39,7 @@ public class LoginFragment extends Fragment {
     private FragmentLoginBinding binding;
     private GoogleSignInClient googleClient;
     private LoginViewModel viewModel;
+    private boolean isGoogleConfigured = false;
 
     private final ActivityResultLauncher<Intent> googleLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -111,34 +112,21 @@ public class LoginFragment extends Fragment {
             return false;
         });
 
-        // Google
-        String webClientId;
-        try {
-            webClientId = getString(R.string.default_web_client_id);
-        } catch (Resources.NotFoundException ex) {
-            webClientId = null;
-        }
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestIdToken(webClientId)
-                .build();
-        googleClient = GoogleSignIn.getClient(requireContext(), gso);
+        // Google: safe configuration
+        configureGoogleSignIn();
 
         binding.btnGoogle.setOnClickListener(v12 -> {
             if (!NetworkUtil.isOnline(requireContext())) {
                 Toast.makeText(requireContext(), getString(R.string.offline_message), Toast.LENGTH_SHORT).show();
                 return;
             }
-            try {
-                String check = getString(R.string.default_web_client_id);
-                if (TextUtils.isEmpty(check) || "REPLACE_WITH_WEB_CLIENT_ID".equalsIgnoreCase(check)) {
-                    Toast.makeText(requireContext(), getString(R.string.google_configure_sha1), Toast.LENGTH_LONG).show();
-                    return;
-                }
-            } catch (Resources.NotFoundException e) {
-                Toast.makeText(requireContext(), getString(R.string.google_missing_res_id), Toast.LENGTH_LONG).show();
+
+            if (!isGoogleConfigured || googleClient == null) {
+                // Config issue (missing / placeholder client ID)
+                Toast.makeText(requireContext(), getString(R.string.google_configure_sha1), Toast.LENGTH_LONG).show();
                 return;
             }
+
             setLoading(true);
             googleLauncher.launch(googleClient.getSignInIntent());
         });
@@ -148,6 +136,36 @@ public class LoginFragment extends Fragment {
                 v13 -> NavHostFragment.findNavController(this).navigate(R.id.action_login_to_register));
         binding.btnForgot.setOnClickListener(
                 v14 -> NavHostFragment.findNavController(this).navigate(R.id.action_login_to_forgotPassword));
+    }
+
+    private void configureGoogleSignIn() {
+        String clientId = null;
+        boolean valid = false;
+
+        try {
+            String check = getString(R.string.default_web_client_id);
+            if (!TextUtils.isEmpty(check)
+                    && !"REPLACE_WITH_WEB_CLIENT_ID".equalsIgnoreCase(check)) {
+                clientId = check;
+                valid = true;
+            }
+        } catch (Resources.NotFoundException ex) {
+            valid = false;
+        }
+
+        isGoogleConfigured = valid;
+
+        if (!valid) {
+            googleClient = null;
+            return;
+        }
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestIdToken(clientId)
+                .build();
+
+        googleClient = GoogleSignIn.getClient(requireContext(), gso);
     }
 
     private void attemptLogin() {
