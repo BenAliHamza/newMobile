@@ -1,8 +1,8 @@
 package tn.esprit.myapplication.ui.auth;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,21 +12,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.google.firebase.auth.FirebaseUser;
-
 import tn.esprit.myapplication.R;
-import tn.esprit.myapplication.core.FirebaseManager;
 import tn.esprit.myapplication.data.Role;
 import tn.esprit.myapplication.data.User;
 import tn.esprit.myapplication.databinding.FragmentRegisterBinding;
-import tn.esprit.myapplication.ui.home.HomeActivity;
 import tn.esprit.myapplication.util.NetworkUtil;
 
 public class RegisterFragment extends Fragment {
 
     private FragmentRegisterBinding binding;
+    private RegisterViewModel vm;
 
     @Nullable
     @Override
@@ -34,106 +32,171 @@ public class RegisterFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentRegisterBinding.inflate(inflater, container, false);
-        FirebaseManager.init(requireContext());
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        ArrayAdapter<CharSequence> sexAdapter = ArrayAdapter.createFromResource(
-                requireContext(), R.array.sex_options, android.R.layout.simple_spinner_dropdown_item);
-        binding.spinnerSex.setAdapter(sexAdapter);
+        vm = new ViewModelProvider(this).get(RegisterViewModel.class);
 
-        ArrayAdapter<CharSequence> roleAdapter = ArrayAdapter.createFromResource(
-                requireContext(), R.array.role_options, android.R.layout.simple_spinner_dropdown_item);
-        binding.spinnerRole.setAdapter(roleAdapter);
+        // Adapters for exposed dropdowns
+        ArrayAdapter<String> sexAdapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                getResources().getStringArray(R.array.sex_options)
+        );
+        ArrayAdapter<String> roleAdapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                getResources().getStringArray(R.array.role_options)
+        );
 
-        binding.btnCreate.setOnClickListener(view -> tryRegister());
-        binding.btnBackToLogin.setOnClickListener(
-                view -> NavHostFragment.findNavController(this).popBackStack());
+        binding.sexDropdown.setAdapter(sexAdapter);
+        binding.roleDropdown.setAdapter(roleAdapter);
+
+        binding.btnCreateAccount.setOnClickListener(v -> submit());
+
+        // Back to login link
+        binding.signInLink.setOnClickListener(v ->
+                NavHostFragment.findNavController(this).popBackStack());
+
+        // Observers
+        vm.loading.observe(getViewLifecycleOwner(), loading -> {
+            boolean isLoading = loading != null && loading;
+            setLoadingOverlay(isLoading);
+
+            binding.inputEmail.setEnabled(!isLoading);
+            binding.inputPassword.setEnabled(!isLoading);
+            binding.inputFirstName.setEnabled(!isLoading);
+            binding.inputLastName.setEnabled(!isLoading);
+            binding.sexDropdown.setEnabled(!isLoading);
+            binding.roleDropdown.setEnabled(!isLoading);
+            binding.btnCreateAccount.setEnabled(!isLoading);
+            binding.signInLink.setEnabled(!isLoading);
+        });
+
+        vm.message.observe(getViewLifecycleOwner(), msg -> {
+            if (!TextUtils.isEmpty(msg)) {
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        vm.registered.observe(getViewLifecycleOwner(), ok -> {
+            if (ok != null && ok) {
+                Toast.makeText(requireContext(), getString(R.string.msg_account_created), Toast.LENGTH_SHORT).show();
+                // Go back to login screen
+                NavHostFragment.findNavController(this).popBackStack();
+            }
+        });
     }
 
-    private void tryRegister() {
-        String firstName = String.valueOf(binding.inputFirstName.getText()).trim();
-        String lastName  = String.valueOf(binding.inputLastName.getText()).trim();
-        String email     = String.valueOf(binding.inputEmail.getText()).trim();
-        String password  = String.valueOf(binding.inputPassword.getText());
+    private void submit() {
+        clearFieldErrors();
 
-        String sex       = binding.spinnerSex.getSelectedItem() != null ? binding.spinnerSex.getSelectedItem().toString() : "";
-        String roleStr   = binding.spinnerRole.getSelectedItem() != null ? binding.spinnerRole.getSelectedItem().toString() : "";
+        String email     = binding.inputEmail.getText() != null ? binding.inputEmail.getText().toString().trim() : "";
+        String password  = binding.inputPassword.getText() != null ? binding.inputPassword.getText().toString() : "";
+        String firstName = binding.inputFirstName.getText() != null ? binding.inputFirstName.getText().toString().trim() : "";
+        String lastName  = binding.inputLastName.getText() != null ? binding.inputLastName.getText().toString().trim() : "";
 
-        boolean invalid = false;
-        if (TextUtils.isEmpty(firstName)) { binding.inputLayoutFirstName.setError(getString(R.string.error_required)); invalid = true; } else binding.inputLayoutFirstName.setError(null);
-        if (TextUtils.isEmpty(lastName))  { binding.inputLayoutLastName.setError(getString(R.string.error_required)); invalid = true; } else binding.inputLayoutLastName.setError(null);
-        if (TextUtils.isEmpty(email))     { binding.inputLayoutEmail.setError(getString(R.string.error_required)); invalid = true; } else binding.inputLayoutEmail.setError(null);
-        if (TextUtils.isEmpty(password))  { binding.inputLayoutPassword.setError(getString(R.string.error_required)); invalid = true; } else binding.inputLayoutPassword.setError(null);
-        if (TextUtils.isEmpty(sex))       { Toast.makeText(requireContext(), getString(R.string.prompt_select_sex), Toast.LENGTH_SHORT).show(); invalid = true; }
-        if (TextUtils.isEmpty(roleStr))   { Toast.makeText(requireContext(), getString(R.string.prompt_select_role), Toast.LENGTH_SHORT).show(); invalid = true; }
-        if (invalid) return;
+        String sex       = binding.sexDropdown.getText() != null ? binding.sexDropdown.getText().toString().trim() : "";
+        String roleStr   = binding.roleDropdown.getText() != null ? binding.roleDropdown.getText().toString().trim() : "";
+
+        boolean valid = true;
+
+        if (TextUtils.isEmpty(firstName)) {
+            binding.inputLayoutFirstName.setError(getString(R.string.error_required));
+            valid = false;
+        }
+
+        if (TextUtils.isEmpty(lastName)) {
+            binding.inputLayoutLastName.setError(getString(R.string.error_required));
+            valid = false;
+        }
+
+        if (TextUtils.isEmpty(email)) {
+            binding.inputLayoutEmail.setError(getString(R.string.error_email_required));
+            valid = false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.inputLayoutEmail.setError(getString(R.string.error_invalid_email));
+            valid = false;
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            binding.inputLayoutPassword.setError(getString(R.string.error_required));
+            valid = false;
+        } else if (password.length() < 6) {
+            binding.inputLayoutPassword.setError(getString(R.string.error_password_min));
+            valid = false;
+        }
+
+        if (TextUtils.isEmpty(roleStr)) {
+            binding.inputLayoutRole.setError(getString(R.string.error_required));
+            valid = false;
+        }
+
+        if (TextUtils.isEmpty(sex)) {
+            binding.inputLayoutSex.setError(getString(R.string.error_required));
+            valid = false;
+        }
+
+        if (!valid) {
+            return;
+        }
 
         if (!NetworkUtil.isOnline(requireContext())) {
             Toast.makeText(requireContext(), getString(R.string.offline_message), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        setLoading(true);
-        FirebaseManager.auth()
-                .createUserWithEmailAndPassword(email, password)
-                .addOnSuccessListener(result -> {
-                    FirebaseUser fu = result.getUser();
-                    if (fu == null) {
-                        setLoading(false);
-                        Toast.makeText(requireContext(), getString(R.string.error_user_not_created), Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    String uid = fu.getUid();
+        Role role = Role.PATIENT;
+        if ("DOCTOR".equalsIgnoreCase(roleStr) || getString(R.string.role_doctor).equalsIgnoreCase(roleStr)) {
+            role = Role.DOCTOR;
+        }
 
-                    Role role = Role.fromString(roleStr);
-                    User user = new User(
-                            firstName,
-                            lastName,
-                            sex,
-                            role,
-                            true,
-                            "",
-                            email
-                    );
+        User u = new User();
+        u.setEmail(email);
+        u.setFirstName(firstName);
+        u.setLastName(lastName);
+        u.setSex(sex);
+        u.setRole(role);
 
-                    FirebaseManager.users()
-                            .document(uid)
-                            .set(user)
-                            .addOnSuccessListener(aVoid -> {
-                                setLoading(false);
-                                Toast.makeText(requireContext(), getString(R.string.msg_account_created), Toast.LENGTH_SHORT).show();
-                                Intent i = new Intent(requireContext(), HomeActivity.class);
-                                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(i);
-                                requireActivity().finish();
-                            })
-                            .addOnFailureListener(e -> {
-                                setLoading(false);
-                                Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                            });
-                })
-                .addOnFailureListener(e -> {
-                    setLoading(false);
-                    Toast.makeText(requireContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                });
+        vm.register(email, password, u);
     }
 
-    private void setLoading(boolean loading) {
-        if (binding == null) return;
-        binding.progress.setVisibility(loading ? View.VISIBLE : View.GONE);
-        binding.btnCreate.setEnabled(!loading);
-        binding.btnBackToLogin.setEnabled(!loading);
-        binding.inputFirstName.setEnabled(!loading);
-        binding.inputLastName.setEnabled(!loading);
-        binding.inputEmail.setEnabled(!loading);
-        binding.inputPassword.setEnabled(!loading);
-        binding.spinnerSex.setEnabled(!loading);
-        binding.spinnerRole.setEnabled(!loading);
+    private void clearFieldErrors() {
+        binding.inputLayoutFirstName.setError(null);
+        binding.inputLayoutLastName.setError(null);
+        binding.inputLayoutEmail.setError(null);
+        binding.inputLayoutPassword.setError(null);
+        binding.inputLayoutRole.setError(null);
+        binding.inputLayoutSex.setError(null);
+    }
+
+    private void setLoadingOverlay(boolean show) {
+        View overlay = binding.loadingOverlay.getRoot();
+        if (show) {
+            overlay.setClickable(true);
+            if (overlay.getVisibility() != View.VISIBLE) {
+                overlay.setAlpha(0f);
+                overlay.setVisibility(View.VISIBLE);
+                overlay.animate()
+                        .alpha(1f)
+                        .setDuration(200L)
+                        .setListener(null);
+            }
+        } else {
+            if (overlay.getVisibility() == View.VISIBLE) {
+                overlay.animate()
+                        .alpha(0f)
+                        .setDuration(200L)
+                        .withEndAction(() -> {
+                            overlay.setVisibility(View.GONE);
+                            overlay.setAlpha(1f);
+                        });
+            }
+        }
     }
 
     @Override

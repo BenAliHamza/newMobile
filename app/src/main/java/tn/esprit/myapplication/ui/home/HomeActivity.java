@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,12 +14,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import tn.esprit.myapplication.R;
-import tn.esprit.myapplication.core.SeedData;
 import tn.esprit.myapplication.ui.auth.AuthHostActivity;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private FrameLayout container;
     private BottomNavigationView bottomNav;
     private MaterialToolbar toolbar;
 
@@ -34,13 +31,9 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // One-shot demo data seed (safe if already present)
-        SeedData.run(getApplicationContext());
-
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        container = findViewById(R.id.home_container);
         bottomNav = findViewById(R.id.bottom_nav);
 
         if (savedInstanceState == null) {

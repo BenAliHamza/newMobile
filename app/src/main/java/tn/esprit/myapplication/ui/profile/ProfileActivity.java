@@ -35,9 +35,6 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityProfileBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        FirebaseManager.init(this);
-
         binding.btnChooseImage.setOnClickListener(v -> pickImage());
         binding.btnRefresh.setOnClickListener(v -> loadProfile());
 

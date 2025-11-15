@@ -1,37 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+  Home screen layout (best practice)
+  - AppBarLayout wraps the Toolbar (required for proper Coordinator scroll behavior)
+  - FragmentContainerView hosts tab fragments
+  - BottomNavigationView pinned at bottom
+-->
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/brand_background">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:elevation="2dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            style="@style/Widget.Material3.Toolbar"
+            style="@style/Widget.App.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Home"
-            app:menu="@menu/menu_home_top"
-            app:popupTheme="@style/ThemeOverlay.Material3.MaterialAlertDialog" />
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:title="@string/app_name" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
+    <!-- Fragment-aware container -->
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/home_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:layout_height="0dp"
+        android:layout_marginBottom="56dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_anchorGravity="top"
+        android:layout_gravity="top"
+        app:layout_dodgeInsetEdges="bottom"
+        android:layout_marginTop="0dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_gravity="bottom"
-        android:background="?attr/colorSurface"
+        android:backgroundTint="@color/brand_surface"
         app:menu="@menu/menu_home_bottom"
-        app:labelVisibilityMode="labeled"
-        android:elevation="8dp"/>
+        app:itemIconTint="@color/brand_onSurface"
+        app:itemTextColor="@color/brand_onSurface"
+        app:labelVisibilityMode="labeled" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

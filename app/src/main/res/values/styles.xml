@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Provide the style referenced by dropdown inputs in case the Material lib
+         on your setup doesn't expose it; this avoids "style not found" errors. -->
+    <style name="Widget.Material3.AutoCompleteTextView.FilledBox.Dense" parent="@android:style/Widget.AutoCompleteTextView">
+        <item name="android:paddingStart">@dimen/space_l</item>
+        <item name="android:paddingEnd">@dimen/space_l</item>
+        <item name="android:paddingTop">@dimen/space_m</item>
+        <item name="android:paddingBottom">@dimen/space_m</item>
+        <item name="android:textAppearance">@style/TextAppearance.Material3.BodyLarge</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+</resources>

@@ -8,11 +8,11 @@ material = "1.13.0"
 constraintlayout = "2.2.1"
 navigationFragment = "2.6.0"
 navigationUi = "2.6.0"
-
-# Firebase & Google
 firebaseBom = "33.7.0"
 googleServices = "4.4.2"
 playServicesAuth = "21.2.0"
+# NEW: Lifecycle for MVVM
+lifecycle = "2.8.7"
 
 [libraries]
 # AndroidX / UI
@@ -33,6 +33,10 @@ firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 
 # Google Sign-In
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
+
+# NEW: Lifecycle (MVVM)
+lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "lifecycle" }
+lifecycle-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata", version.ref = "lifecycle" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -21,14 +21,6 @@
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
         <item name="textInputStyle">@style/Widget.App.TextInputLayout</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-
-        <!-- Subtle window animations -->
-        <item name="android:windowAnimationStyle">@style/Window.Animation.Fade</item>
-        <item name="android:windowContentTransitions">true</item>
-
-        <!-- Edge-to-edge with safe contrast -->
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
@@ -46,8 +38,15 @@
         <item name="boxStrokeColor">@color/brand_surfaceVariant</item>
         <item name="hintTextColor">@color/brand_onSurface</item>
         <item name="android:textColor">@color/brand_onSurface</item>
-        <!-- Use central shape style -->
         <item name="shapeAppearance">@style/Shape.RoundedXL</item>
+    </style>
+
+    <!-- Card style used by Register screen -->
+    <style name="Widget.App.Card" parent="Widget.Material3.CardView.Filled">
+        <item name="cardUseCompatPadding">true</item>
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
     <!-- Toolbar -->

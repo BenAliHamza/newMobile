@@ -1,11 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App name -->
     <string name="app_name">ReadyDocs</string>
-    <string name="default_web_client_id">REPLACE_WITH_WEB_CLIENT_ID</string>
-    <string name="create_account">Create account</string>
-    <string name="role">Role</string>
+
+    <!-- Screen Titles -->
+    <string name="login_title">Login</string>
+    <string name="register_title">Create account</string>
+    <string name="forgot_title">Forgot password</string>
+    <string name="title_forgot_password">Forgot password</string>
+
+    <!-- Labels / Inputs -->
+    <string name="full_name">Full Name</string>
+    <string name="email">Email</string>
+    <string name="phone_optional">Phone (Optional)</string>
     <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
     <string name="first_name">First name</string>
-    <string name="settings">Settings</string>
+    <string name="last_name">Last name</string>
+    <string name="role">Role</string>
+    <string name="label_sex">Sex</string>
+    <string name="label_role">Role</string>
+
+    <!-- Actions -->
+    <string name="register">Register</string>
+    <string name="create_account">Create Account</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="action_login">Login</string>
+    <string name="action_google">Continue with Google</string>
+    <string name="action_create_account">Create a new account</string>
+    <string name="action_forgot_password">Forgot password?</string>
+    <string name="action_back_to_login">Back to Login</string>
+    <string name="back_to_login">Back to Login</string>
+    <string name="action_send_reset">Send reset email</string>
     <string name="sign_out">Sign out</string>
 
+    <!-- Prompts / Toasts -->
+    <string name="prompt_select_sex">Select sex</string>
+    <string name="prompt_select_role">Select role</string>
+
+    <!-- Messages / Errors -->
+    <string name="welcome_back">Welcome back</string>
+    <string name="offline_message">You are offline. Check your connection.</string>
+    <string name="error_required">Required</string>
+    <string name="error_email_required">Email required</string>
+    <string name="error_invalid_email">Enter a valid email</string>
+    <string name="error_password_min">Password must be at least 6 characters</string>
+    <string name="error_user_not_created">User not created.</string>
+    <string name="msg_account_created">Account created.</string>
+    <string name="msg_reset_email_sent">Password reset email sent.</string>
+    <string name="msg_reset_email_failed">Could not send reset email.</string>
+    <string name="msg_sign_in_success">Signed in successfully.</string>
+
+    <!-- Google Sign-In messages -->
+    <string name="google_cancelled">Google Sign-In canceled.</string>
+    <string name="google_null_account">Google account is null.</string>
+    <string name="google_missing_token">Missing ID token. Add SHA-1 in Firebase and re-sync.</string>
+    <string name="google_failed">Google Sign-In failed: %1$d</string>
+    <string name="google_configure_sha1">Configure SHA-1 in Firebase &amp; re-download google-services.json.</string>
+    <string name="google_missing_res_id">Missing default_web_client_id. Add SHA-1 &amp; re-sync.</string>
+    <string name="hint_email">Enter your email</string>
+    <string name="hint_password">Enter your password</string>
+
+    <!-- Loading -->
+    <string name="loading_message">Please wait…</string>
+
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+
+    <!-- Bottom navigation -->
+    <string name="menu_indicators_title">Indicators</string>
+    <string name="menu_suivie_title">Suivie</string>
+    <string name="menu_medication_title">Medication</string>
+    <string name="menu_profile_title">Profile</string>
+
+    <!-- Sex / Roles -->
+    <string name="sex_male">Male</string>
+    <string name="sex_female">Female</string>
+    <string name="sex_other">Other</string>
+    <string name="role_doctor">DOCTOR</string>
+    <string name="role_patient">PATIENT</string>
 </resources>

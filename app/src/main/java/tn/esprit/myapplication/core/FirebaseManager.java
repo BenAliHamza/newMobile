@@ -13,44 +13,48 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 
-/** Centralized, minimal Firebase access. */
+/**
+ * FirebaseManager
+ *
+ * ✅ Free of static Context-holding singletons (addresses memory-leak lint).
+ * We do NOT keep FirebaseAuth/Firestore/Storage in static fields anymore.
+ * Instead, we always fetch instances from the SDK (which manages them safely).
+ *
+ * App-level initialization happens in App.onCreate().
+ */
 public final class FirebaseManager {
 
     public static final String COLLECTION_USERS = "users";
 
-    private static FirebaseAuth auth;
-    private static FirebaseFirestore firestore;
-    private static FirebaseStorage storage;
+    private FirebaseManager() { }
 
-    private FirebaseManager() {}
-
+    /** Backward-compatible no-op. Keep for old callers; safe to remove later. */
     public static void init(@NonNull Context context) {
-        FirebaseApp.initializeApp(context.getApplicationContext());
-        if (auth == null) auth = FirebaseAuth.getInstance();
-        if (firestore == null) firestore = FirebaseFirestore.getInstance();
-        if (storage == null) storage = FirebaseStorage.getInstance();
+        // Ensure default app exists; safe to call multiple times.
+        try {
+            FirebaseApp.getInstance();
+        } catch (IllegalStateException ignore) {
+            FirebaseApp.initializeApp(context.getApplicationContext());
+        }
     }
 
     public static FirebaseAuth auth() {
-        if (auth == null) auth = FirebaseAuth.getInstance();
-        return auth;
+        return FirebaseAuth.getInstance();
     }
 
     public static FirebaseFirestore db() {
-        if (firestore == null) firestore = FirebaseFirestore.getInstance();
-        return firestore;
+        return FirebaseFirestore.getInstance();
     }
 
     public static FirebaseStorage storage() {
-        if (storage == null) storage = FirebaseStorage.getInstance();
-        return storage;
+        return FirebaseStorage.getInstance();
     }
 
     public static CollectionReference users() {
         return db().collection(COLLECTION_USERS);
     }
 
-    // Auth helpers
+    // Auth helpers (one-shot Tasks)
     public static Task<AuthResult> signInWithEmail(@NonNull String email, @NonNull String password) {
         return auth().signInWithEmailAndPassword(email.trim(), password);
     }
