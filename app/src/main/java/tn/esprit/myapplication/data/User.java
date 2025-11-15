@@ -9,10 +9,20 @@ public class User {
     private String imageUrl;
     private String email;         // unique identifier in auth + stored in Firestore
 
+    // New generic fields usable by both doctors and patients
+    private String phone;
+    private String city;
+
     // Empty constructor required by Firestore
     public User() {}
 
-    public User(String firstName, String lastName, String sex, Role role, Boolean isFirstLogin, String imageUrl, String email) {
+    public User(String firstName,
+                String lastName,
+                String sex,
+                Role role,
+                Boolean isFirstLogin,
+                String imageUrl,
+                String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.sex = sex;
@@ -42,4 +52,12 @@ public class User {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    // New getters/setters
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
 }

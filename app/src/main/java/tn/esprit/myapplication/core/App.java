@@ -14,6 +14,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         // Initialize Firebase once per process; safe to call repeatedly.
         try {
             FirebaseApp.getInstance();

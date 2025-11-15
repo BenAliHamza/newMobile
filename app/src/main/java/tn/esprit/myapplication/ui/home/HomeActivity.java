@@ -1,6 +1,5 @@
 package tn.esprit.myapplication.ui.home;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,7 +12,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import tn.esprit.myapplication.R;
-import tn.esprit.myapplication.ui.auth.AuthHostActivity;
+import tn.esprit.myapplication.seed.DataSeeder;
 import tn.esprit.myapplication.ui.auth.AuthUiNavigator;
 
 public class HomeActivity extends AppCompatActivity {
@@ -55,6 +54,11 @@ public class HomeActivity extends AppCompatActivity {
         if (!AuthUiNavigator.requireAuthOrFinish(this)) {
             return;
         }
+
+        // At this point we are sure there is an authenticated user and
+        // Firestore rules with request.auth != null will allow writes.
+        // DataSeeder is idempotent and will only seed once.
+        DataSeeder.runIfNeeded();
     }
 
     private boolean onBottomItemSelected(@NonNull MenuItem item) {
