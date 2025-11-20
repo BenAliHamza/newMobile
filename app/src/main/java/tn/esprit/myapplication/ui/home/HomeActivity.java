@@ -26,7 +26,9 @@ public class HomeActivity extends AppCompatActivity {
 
     private final Fragment indicatorsFragment = new IndicatorsFragment();
     private final Fragment suivieFragment = new SuivieFragment();
+
     private final Fragment medicationFragment = new MedicationFragment();
+    private final Fragment agendaFragment = new AgendaFragment();
     private final Fragment profileFragment = new ProfileFragment();
 
     @Override
@@ -78,6 +80,8 @@ public class HomeActivity extends AppCompatActivity {
             target = suivieFragment; title = getString(R.string.menu_suivie_title);
         } else if (id == R.id.menu_medication) {
             target = medicationFragment; title = getString(R.string.menu_medication_title);
+        } else if (id == R.id.menu_agenda) {                          // ⭐ NEW
+            target = agendaFragment; title = getString(R.string.menu_agenda_title);
         } else if (id == R.id.menu_profile) {
             target = profileFragment; title = getString(R.string.menu_profile_title);
         }

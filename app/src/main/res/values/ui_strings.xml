@@ -5,6 +5,8 @@
     <string name="menu_suivie_title">Suivie</string>
     <string name="menu_medication_title">Medication</string>
     <string name="menu_profile_title">Profile</string>
+    <string name="menu_agenda_title">Agenda</string>
+
 
     <!-- Sex / Roles (keep ONLY here to avoid duplicates) -->
     <string name="sex_male">Male</string>

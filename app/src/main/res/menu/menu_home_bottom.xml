@@ -14,7 +14,10 @@
         android:id="@+id/menu_medication"
         android:title="@string/menu_medication_title"
         android:icon="@android:drawable/ic_menu_recent_history" />
-
+    <item
+        android:id="@+id/menu_agenda"
+        android:title="Agenda"
+        android:icon="@drawable/baseline_event_24" />
     <item
         android:id="@+id/menu_profile"
         android:title="@string/menu_profile_title"
